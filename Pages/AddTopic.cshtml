@@ -1,0 +1,88 @@
+﻿@page
+@model Anonymous_Topics.Pages.AddTopicModel
+@{
+    Layout = "Shared/_Layout";
+}
+<div class="container mt-5">
+    <h2>People Form</h2>
+    @if (ViewData["errors"] is string error)
+    {
+        <div class="col-12 mb-3">
+            <div class="alert alert-danger">
+                @error
+            </div>
+
+        </div>
+    }
+    @if (ViewData["success"] is string success)
+    {
+        <div class="col-12 mb-3">
+            <div class="alert alert-success">
+                @success
+            </div>
+
+        </div>
+    }
+    <form method="post">
+        <div class="mb-3">
+            <label for="@Model.Title" class="form-label">Name:</label>
+            <input type="text" class="form-control" asp-for="@Model.Title" placeholder="Enter your Name">
+            <span asp-validation-for="@Model.Title" class="text-danger"></span>
+
+
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="@Model.Description" class="form-label">Description:</label>
+            <input type="text" class="form-control" asp-for="@Model.Description" placeholder="Enter your FamilyName">
+            <span asp-validation-for="@Model.Description" class="text-danger"></span>
+
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.TopicCategoryId" class="control-label"></label>
+            <select asp-for="@Model.TopicCategoryId" class="form-control">
+                <option value="">-- Select --</option>
+                @foreach (var item in Model.AvailableTopicCategories)
+                {
+                    <option value="@item.Id">@item.Name</option>
+
+                }
+            </select>
+            <span asp-validation-for="@Model.TopicCategoryId" class="text-danger"></span>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div class="container mt-5">
+        <h2>Topic Table Grid </h2>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>TopicCategoryId</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Topics)
+
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Title</td>
+                        <td>@item.Description</td>
+                        <td>@item.TopicCategoryId</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
