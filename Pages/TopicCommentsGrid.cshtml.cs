@@ -19,7 +19,7 @@ namespace Anonymous_Topics.Pages
             _context = context;
         }
         [BindProperty]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [BindProperty]
         public string Title { get; set; }
         [BindProperty]
@@ -39,6 +39,8 @@ namespace Anonymous_Topics.Pages
         [Required]
         public string UserName { get; set; }
 
+        [BindProperty]
+        public Guid TopicId { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
@@ -83,6 +85,29 @@ namespace Anonymous_Topics.Pages
             _context.TopicComments.Add(topicComment);
             await _context.SaveChangesAsync();
             return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
+
+        }
+
+        public async Task<IActionResult> OnPostCloseCommentAsync(Guid id)
+        {
+            var guidValue = Request.Query["id"].ToString();
+
+            if (Id==TopicId)
+            {
+                var topic = await _context.Topics.FindAsync(Id);
+                if (topic != null)
+                {
+                    topic.IsClosed=true;
+                    await _context.SaveChangesAsync();
+
+                }
+            }
+            else
+            {
+                TempData["Error"] = "You are not Allowed to Close the Topic";
+
+            }
+            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
 
         }
     }
