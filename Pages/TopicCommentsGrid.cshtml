@@ -1,7 +1,8 @@
 ﻿@page "{handler?}"
 @model Anonymous_Topics.Pages.TopicCommentsGridModel
 @{
-    Layout = "Shared/_Layout";
+    Layout = "Shared/_NewLayout";
+    ViewData["Title"] = "TopicComments";
 
 }
 @if (ViewData["errors"] is string error)

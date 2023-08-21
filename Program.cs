@@ -15,7 +15,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
 
 });
-
+// setting up the Homepage as the landing page  
+builder.Services.AddMvc().AddRazorPagesOptions(options =>
+{
+    options.Conventions.AddPageRoute("/TopicsGrid", "");
+});
 
 var app = builder.Build();
 
@@ -50,6 +54,7 @@ app.UseRouting();
 app.UseAuthorization();
 app.MapDefaultControllerRoute();
 app.MapRazorPages();
+
 //app.MapControllerRoute(
    // name: "default",
    // pattern: "{controller=Home}/{action=Index}/{id?}");
