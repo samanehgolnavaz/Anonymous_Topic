@@ -2,11 +2,11 @@
 @model Anonymous_Topics.Pages.TopicsGridModel
 @{
     Layout = "Shared/_Layout";
+
 }
 
 <div class="header">
     <h1>Topics</h1>
-    <!-- Navigation and user information here -->
 </div>
 
 
@@ -18,15 +18,11 @@
                 @foreach (var item in Model.Categories)
                 {
                     <li>
-                        <a href="#">
-                            <i class="fas fa-layer-group"></i> @item.Name
-                            @*        <span class="comment-count">
-                        <i class="fas fa-comment"></i> 1234
-                        </span>*@
+                        <a asp-page="TopicsGrid" asp-route-id="@Model.Topics.Where(c => c.TopicCategoryId==item.Id).Select(a => a.TopicCategoryId).FirstOrDefault()">
+                            <i class="fas fa-layer-group"></i> @item.Name    (@Model.Topics.Where(c => c.TopicCategoryId==item.Id).Count())
                         </a>
                     </li>
                 }
-    
             </ul>
         </div>
     </div>
@@ -34,22 +30,20 @@
     <div class="post-list">
         @foreach (var item in Model.Topics)
         {
-
             <div class="post">
                 <div class="post-title" style="font-weight:bolder">@item.Title</div>
                 <div class="post-content">@item.Description</div>
                 <div class="post-image">
-                    <img src="~/images/@item.Image" alt="Post Image 1">
+                    <img src="~/images/@item.Image" alt="@item.Image">
                 </div>
                 <div class="post-footer">
-                    <i class="far fa-user"></i> Posted by u/example_user1 | 1000 upvotes
-                    <i class="far fa-user">
+                    <span class="comment-count">
+                        <i class="fas fa-comment"></i> (@Model.TopicComments.Where(c => c.TopicId==item.Id).Count()) Comments
+                    </span>
+                    <i>
                         <a class="btn btn-warning" asp-page="TopicCommentsGrid" asp-route-id="@item.Id">Details</a>
                     </i>
-
-                    <span class="comment-count">
-                        <i class="fas fa-comment"></i> 50 comments
-                    </span>
+                    <i class="far fa-user"></i> Posted by example_user1
                 </div>
             </div>
         }
@@ -61,7 +55,8 @@
 </div>
 
 
-@section Styles {
+@section Styles
+    {
     <link rel="stylesheet" href="~/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     }

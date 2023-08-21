@@ -16,17 +16,20 @@ namespace Anonymous_Topics.Pages
             _context = context;
         }
         [BindProperty]
-
+        public List<GetTopicCommentsViewModel> TopicComments { get; set; } = new();
         public List<GetTopicsViewModel> Topics { get; set; } = new();
         public List<GetCategoriesViewModel> Categories { get; set; } = new();
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(Guid id)
         {
-            Topics = await _context
-                .Topics
-                .AsNoTracking()
-                .Select(c => new GetTopicsViewModel
+            if (id != Guid.Empty)
+            {
+                Topics = await _context
+                 .Topics
+                 .AsNoTracking()
+                 .Where(n => n.TopicCatergoryId == id)
+                 .Select(c => new GetTopicsViewModel
                     (c.Id
                       , c.Title
                       , c.Description
@@ -34,19 +37,46 @@ namespace Anonymous_Topics.Pages
                       , c.Image
                       , c.IsClosed
                       , c.CreatedDate
-
-                ))
-                .ToListAsync();
-            Categories=await _context
+                     ))
+                 .ToListAsync();
+            }
+            else
+            {
+                Topics = await _context
+                   .Topics
+                   .AsNoTracking()
+                   .Select(c => new GetTopicsViewModel
+                     (c.Id
+                       , c.Title
+                       , c.Description
+                       , c.TopicCatergoryId
+                       , c.Image
+                       , c.IsClosed
+                       , c.CreatedDate
+                     ))
+                   .ToListAsync();
+            }
+            Categories = await _context
                 .TopicCategories
                 .AsNoTracking()
                 .Select(c => new GetCategoriesViewModel
                     (c.Id
                       , c.Name
-               
-
                 ))
                 .ToListAsync();
+
+            TopicComments = await _context
+                 .TopicComments
+                 .AsNoTracking()
+                 .OrderByDescending(c => c.CreatedDate)
+                 .Select(s => new GetTopicCommentsViewModel
+                   (s.Id,
+                     s.Description,
+                     s.UserName,
+                     s.TopicId,
+                     s.CreatedDate
+                   ))
+                   .ToListAsync();
         }
     }
 }
