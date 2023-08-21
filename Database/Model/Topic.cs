@@ -17,5 +17,7 @@
         public  ICollection<TopicComment>?  TopicComment { get; set; }
         public bool IsClosed { get; set; }
         public DateTime CreatedDate { get; set; }
+
+    
     }
 }

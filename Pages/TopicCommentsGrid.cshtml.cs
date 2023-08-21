@@ -33,6 +33,8 @@ namespace Anonymous_Topics.Pages
         public List<GetTopicsViewModel> Topics { get; set; } = new();
         public List<GetTopicCommentsViewModel> TopicComments { get; set; } = new();
         [BindProperty]
+        public Guid CommentId { get; set; }
+        [BindProperty]
         [Required]
         public string  CommentDescription { get; set; }
         [BindProperty]
@@ -45,8 +47,8 @@ namespace Anonymous_Topics.Pages
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var topic = await _context.Topics.FindAsync(id);
-
-            TopicComments= await _context
+        
+            TopicComments = await _context
                 .TopicComments
                 .AsNoTracking()
                 .OrderByDescending(c => c.CreatedDate)
@@ -64,6 +66,8 @@ namespace Anonymous_Topics.Pages
                 TempData["Error"] = "User not found";
                 return RedirectToPage("TopicsGrid");
             }
+            ViewData["Id"] = topic.Id;
+            Id = topic.Id;
             Title = topic.Title;
             Description = topic.Description;
             Image = topic.Image;
@@ -88,10 +92,11 @@ namespace Anonymous_Topics.Pages
 
         }
 
-        public async Task<IActionResult> OnPostCloseCommentAsync(Guid id)
+        public async Task<IActionResult> OnPostCloseCommentAsync()
         {
-            var guidValue = Request.Query["id"].ToString();
-
+            //var guidValue = Request.Query["id"].ToString();
+            //string stringValue = ViewData["Id"] as string;
+            //if (!string.IsNullOrEmpty(stringValue))
             if (Id==TopicId)
             {
                 var topic = await _context.Topics.FindAsync(Id);

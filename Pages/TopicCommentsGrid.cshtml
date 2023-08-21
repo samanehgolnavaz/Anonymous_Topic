@@ -27,7 +27,8 @@
 </nav>
 
 <div class="container mt-4">
-    <input value="@Model.Id" hidden />
+    <input value="@Model.Id" hidden type="text" asp-for="@Model.Id" />
+    <p hidden>@ViewData["Id"]</p>
 
     <div class="row">
         <div class="col-md-12">
@@ -75,7 +76,7 @@
                 {
                     @foreach (var item in Model.TopicComments.OrderByDescending(c => c.CreatedDate))
                     {
-                      <input value="@item.CommentId" hidden />
+                      <input value="@item.CommentId" asp-for="@Model.CommentId" type="text" hidden />
                       <div class="comment">
                             <div class="comment-info">
                                 Comment by
@@ -104,15 +105,14 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        @*                    <input type="text" class="form-control" id="topicIdField" placeholder="Your Key">
-                        *@                    <label for="@Model.TopicId" class="form-label">TopicId:</label>
+                        <label for="@Model.TopicId" class="form-label">TopicId:</label>
                         <input type="text" class="form-control" id="topicIdField" asp-for="@Model.TopicId" placeholder="Enter Your Key">
                         <span asp-validation-for="@Model.TopicId" class="text-danger"></span>
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="CloseComment" asp-route-guidParameter="id" class="btn btn-primary" id="saveButton">Save</button>
+                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="CloseComment"   class="btn btn-primary" id="saveButton">Save</button>
                     </div>
                 </div>
 
@@ -120,12 +120,3 @@
         </div>
     </div>
 </div>
-@section Scripts
-    {
-    <script>
-        //document.getElementById('saveButton').addEventListener('click', function () {
-        //    const inputValue = document.getElementById('topicIdField').value;
-        //    //alert('Input value: ' + inputValue);
-        //});
-    </script>
-}
