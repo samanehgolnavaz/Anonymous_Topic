@@ -5,14 +5,14 @@
 }
 
 <div class="container mt-5">
-    <h2>People Form</h2>
+    <h2>Category Form</h2>
     @if (ViewData["errors"] is string error)
     {
         <div class="col-12 mb-3">
             <div class="alert alert-danger">
                 @error
             </div>
-
+                
         </div>
     }
     @if (ViewData["success"] is string success)
@@ -27,7 +27,7 @@
     <form method="post">
         <div class="mb-3">
             <label for="@Model.Name" class="form-label">Name:</label>
-            <input type="text" class="form-control" asp-for="@Model.Name" placeholder="Enter your Name">
+            <input type="text" class="form-control" asp-for="@Model.Name" placeholder="Enter Category Name">
             <span asp-validation-for="@Model.Name" class="text-danger"></span>
 
 

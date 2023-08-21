@@ -21,11 +21,10 @@ namespace Anonymous_Topics.Pages
         public string Description { get; set; }
         [BindProperty]
         [Required]
-        public int TopicCategoryId { get; set; }
-
-        public List<GetTopicsViewModel>  Topics { get; set; }
-        public List<TopicCategory> AvailableTopicCategories { get; set; }
-
+        public Guid TopicCategoryId { get; set; }
+        [BindProperty]
+        [Required]
+        public int Images { get; set; }
         private readonly ApplicationDbContext _context;
 
         public AddTopicModel(ApplicationDbContext context)
@@ -33,17 +32,43 @@ namespace Anonymous_Topics.Pages
             _context = context;
         }
 
+
+        public List<GetTopicsViewModel> Topics { get; set; } = new();
+
+        public List<TopicCategory> AvailableTopicCategories { get; set; }
+
+  
         public async Task  OnGetAsync(CancellationToken cancellationToken)
         {
             AvailableTopicCategories = await _context.TopicCategories.AsNoTracking().ToListAsync(cancellationToken);
 
+            Topics = await _context
+              .Topics
+              .AsNoTracking()
+              .OrderByDescending(x => x.Id)
+                     .Select(c => new GetTopicsViewModel
+                  (c.Id
+                      , c.Title
+                      , c.Description
+                      , c.TopicCatergoryId
+                      , c.Image
+                      , c.IsClosed
+                      ,c.CreatedDate
+
+                  
+              ))
+              .ToListAsync();
         }
-        public async Task OnPost(CancellationToken cancellationToken)
+        public async Task<IActionResult> OnPost(CancellationToken cancellationToken)
         {
             var topic = new Topic()
             {
               Title = Title,
-              Description = Description
+              Description = Description,
+              TopicCatergoryId=TopicCategoryId,
+              Image="",
+              IsClosed=false
+
              
             };
             _context.Topics.Add(topic);
@@ -51,7 +76,7 @@ namespace Anonymous_Topics.Pages
             AvailableTopicCategories = await _context.TopicCategories.AsNoTracking().ToListAsync(cancellationToken);
             ViewData["Success"] = $"Topic Added Successfully .";
 
-
+            return RedirectToPage("/AddTopic");
 
         }
 

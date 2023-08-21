@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Anonymous_Topics.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230818134142_update-database")]
-    partial class updatedatabase
+    [Migration("20230821062811_AddNullableType-ParentTopicCommentID")]
+    partial class AddNullableTypeParentTopicCommentID
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,20 +31,23 @@ namespace Anonymous_Topics.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CatergoryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TopicCatergoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -58,7 +61,6 @@ namespace Anonymous_Topics.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -76,28 +78,37 @@ namespace Anonymous_Topics.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ParentTopicCommentId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TopicId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("topicComments");
+                    b.ToTable("TopicComments");
                 });
 
             modelBuilder.Entity("Anonymous_Topics.Database.Model.TopicComment", b =>
                 {
-                    b.HasOne("Anonymous_Topics.Database.Model.Topic", "Topic")
-                        .WithMany()
+                    b.HasOne("Anonymous_Topics.Database.Model.Topic", null)
+                        .WithMany("TopicComment")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Topic");
+            modelBuilder.Entity("Anonymous_Topics.Database.Model.Topic", b =>
+                {
+                    b.Navigation("TopicComment");
                 });
 #pragma warning restore 612, 618
         }

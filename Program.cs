@@ -1,17 +1,21 @@
 using Anonymous_Topics.Database;
+using Anonymous_Topics.Services.Implementations;
+using Anonymous_Topics.Services.Intefaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IGuidGenerator,GuidGenerator>();
+builder.Services.AddRazorPages();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
 
 });
 
-builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -44,9 +48,10 @@ async Task ApplyDatabaseCreation(WebApplication webApplication)
 app.UseRouting();
 
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapDefaultControllerRoute();
+app.MapRazorPages();
+//app.MapControllerRoute(
+   // name: "default",
+   // pattern: "{controller=Home}/{action=Index}/{id?}");
 
 await app.RunAsync();

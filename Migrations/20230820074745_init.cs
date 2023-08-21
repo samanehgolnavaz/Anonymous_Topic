@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Anonymous_Topics.Migrations
 {
     /// <inheritdoc />
-    public partial class updatedatabase : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace Anonymous_Topics.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,9 +28,11 @@ namespace Anonymous_Topics.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CatergoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TopicCatergoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsClosed = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -39,19 +41,20 @@ namespace Anonymous_Topics.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "topicComments",
+                name: "TopicComments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParentTopicCommentId = table.Column<int>(type: "int", nullable: false),
                     TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_topicComments", x => x.Id);
+                    table.PrimaryKey("PK_TopicComments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_topicComments_Topics_TopicId",
+                        name: "FK_TopicComments_Topics_TopicId",
                         column: x => x.TopicId,
                         principalTable: "Topics",
                         principalColumn: "Id",
@@ -59,8 +62,8 @@ namespace Anonymous_Topics.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_topicComments_TopicId",
-                table: "topicComments",
+                name: "IX_TopicComments_TopicId",
+                table: "TopicComments",
                 column: "TopicId");
         }
 
@@ -71,7 +74,7 @@ namespace Anonymous_Topics.Migrations
                 name: "TopicCategories");
 
             migrationBuilder.DropTable(
-                name: "topicComments");
+                name: "TopicComments");
 
             migrationBuilder.DropTable(
                 name: "Topics");

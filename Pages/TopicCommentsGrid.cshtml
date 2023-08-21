@@ -1,0 +1,122 @@
+﻿@page "{handler?}"
+@model Anonymous_Topics.Pages.TopicCommentsGridModel
+@{
+    Layout = "Shared/_Layout";
+
+}
+@if (ViewData["errors"] is string error)
+{
+    <div class="col-12 mb-3">
+        <div class="alert alert-danger">
+            @error
+        </div>
+
+    </div>
+}
+@if (ViewData["success"] is string success)
+{
+    <div class="col-12 mb-3">
+        <div class="alert alert-success">
+            @success
+        </div>
+
+    </div>
+}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <h2 class="post-title">Topic Comments</h2>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="post">
+                <h2 class="post-title">@Model.Title</h2>
+                <div class="post-info">
+                    Posted by u/example_user | 1200 points
+                </div>
+                <div class="post-content">
+                    <img src="~/images/@Model.Image" class="img-fluid" alt="@Model.Title">
+                    <p>@Model.Description</p>
+                </div>
+            </div>
+            <div class="comment-form mt-4">
+                <div class="close-comments mt-4">
+                    <button type="button" class="btn btn-secondary" disabled="@Model.IsClosed" data-bs-toggle="modal" data-bs-target="#topicModal">Close Comments</button>
+
+                </div>
+                <h3>Add a Comment</h3>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="@Model.UserName" class="form-label">Your Username</label>
+                        <input type="text" class="form-control" asp-for="@Model.UserName" placeholder="Enter your username">
+                        <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="@Model.CommentDescription" class="form-label">Your Comment</label>
+                        <textarea class="form-control" asp-for="@Model.CommentDescription" placeholder="Enter your comment"></textarea>
+                        <span asp-validation-for="@Model.CommentDescription" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Comment</button>
+                </form>
+            </div>
+            <div class="comments mt-4">
+                <h3>Comments</h3>
+                @if (Model.TopicComments.Count == 0)
+                {
+                    <div class="comment">
+                        <div class="comment-info">
+                            There Is No Comment For This Topic
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model.TopicComments.OrderByDescending(c => c.CreatedDate))
+                    {
+                        <input value="@item.Id" hidden />
+                        <div class="comment">
+                            <div class="comment-info">
+                                Comment by
+                                <span style="font-weight:bold"> @item.UserName</span>
+                                /commenter1
+                                |Created at
+                                <span style="font-weight:bold">
+                                    @item.CreatedDate
+                                </span>
+                            </div>
+                            <div class="comment-content" style="color:gray">
+                                <p>@item.Description</p>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="topicModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="closeCommentModal">Please Enter Your TopicId</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="topicIdField" placeholder="Your Key">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script>
+        document.getElementById('saveButton').addEventListener('click', function () {
+            const inputValue = document.getElementById('topicIdField').value;
+            alert('Input value: ' + inputValue);
+        });
+    </script>
+}

@@ -8,8 +8,10 @@
         }
 
         public Guid Id { get; set; }
-        public string Description { get; set; }
-        public Topic Topic { get; set; }
+        public string UserName { get; set; }
+        public string? Description { get; set; }
+        public Guid? ParentTopicCommentId { get; set; }
+        public Guid TopicId { get; set; }
         public DateTime CreatedDate { get; set; }
 
 

@@ -10,7 +10,7 @@ namespace Anonymous_Topics.Database.Model
         }
 
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
     
     }

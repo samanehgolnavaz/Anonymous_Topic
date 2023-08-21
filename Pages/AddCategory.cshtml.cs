@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Anonymous_Topics.Database;
 using Anonymous_Topics.Database.Model;
 using Anonymous_Topics.Models.Api;
@@ -5,25 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Anonymous_Topics.Pages
 {
     public class AddCategoryModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
 
         [BindProperty]
         [Required]
         public string Name { get; set; }
         public List<GetCategoriesViewModel> TopicCategories { get; set; } = new();
-        public AddCategoryModel(string name, ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+
+        public AddCategoryModel(ApplicationDbContext context)
         {
-            Name = name;
             _context = context;
         }
 
         public async Task OnGetAsync()
+        
         {
             TopicCategories = await _context
                 .TopicCategories
@@ -36,7 +37,7 @@ namespace Anonymous_Topics.Pages
                 )
                 .ToListAsync();
         }
-        public async Task OnPost(CancellationToken cancellationToken)
+        public async Task<IActionResult> OnPost(CancellationToken cancellationToken)
         {
             var topicCaterory = new TopicCategory()
             {
@@ -45,6 +46,7 @@ namespace Anonymous_Topics.Pages
             _context.TopicCategories.Add(topicCaterory);
             var result = await _context.SaveChangesAsync(cancellationToken);
             ViewData["Success"] = $"Category Added Successfully .";
+            return RedirectToPage("/AddCategory");
 
         }
     }

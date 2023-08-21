@@ -1,0 +1,89 @@
+using Anonymous_Topics.Database;
+using Anonymous_Topics.Database.Model;
+using Anonymous_Topics.Models.Api;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+
+namespace Anonymous_Topics.Pages
+{
+    public class TopicCommentsGridModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+
+        public TopicCommentsGridModel(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        [BindProperty]
+        public int Id { get; set; }
+        [BindProperty]
+        public string Title { get; set; }
+        [BindProperty]
+        public string Description { get; set; }
+        [BindProperty]
+        public string Image { get; set; }
+        [BindProperty]
+        public bool IsClosed { get; set; }
+        [BindProperty]
+
+        public List<GetTopicsViewModel> Topics { get; set; } = new();
+        public List<GetTopicCommentsViewModel> TopicComments { get; set; } = new();
+        [BindProperty]
+        [Required]
+        public string  CommentDescription { get; set; }
+        [BindProperty]
+        [Required]
+        public string UserName { get; set; }
+
+
+        public async Task<IActionResult> OnGetAsync(Guid id)
+        {
+            var topic = await _context.Topics.FindAsync(id);
+
+            TopicComments= await _context
+                .TopicComments
+                .AsNoTracking()
+                .OrderByDescending(c => c.CreatedDate)
+                .Where(a => a.TopicId == id)
+                .Select(s => new GetTopicCommentsViewModel(
+                s.Id,
+                s.Description,
+                s.UserName,
+                s.TopicId,
+                s.CreatedDate
+                )).ToListAsync();
+
+            if (topic is null)
+            {
+                TempData["Error"] = "User not found";
+                return RedirectToPage("TopicsGrid");
+            }
+            Title = topic.Title;
+            Description = topic.Description;
+            Image = topic.Image;
+            IsClosed= topic.IsClosed;
+            return Page();
+
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var topicId = new Guid(Request.Query["id"].ToString());
+            var topicComment = new TopicComment()
+            {
+                Description= CommentDescription,
+                UserName = UserName,
+                TopicId = topicId
+
+            };
+            _context.TopicComments.Add(topicComment);
+            await _context.SaveChangesAsync();
+            return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
+
+        }
+    }
+}

@@ -19,7 +19,9 @@ namespace Anonymous_Topics.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            var projectAssembly = typeof(ApplicationDbContext).Assembly;
+
+            modelBuilder.ApplyConfigurationsFromAssembly(projectAssembly);
         }
     }
 }
