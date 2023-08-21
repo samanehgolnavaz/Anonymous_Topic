@@ -23,6 +23,16 @@
 
     </div>
 }
+@section Styles
+{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .nested-comment {
+            margin-left: 20px; /* Adjust the indent size as needed */
+        }
+    </style>
+}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <h2 class="post-title">Topic Comments</h2>
 </nav>
@@ -92,7 +102,37 @@
                             </div>
                             <div class="comment-content" style="color:gray">
                                 <p>@item.Description</p>
+                            </div>              
+                      @*      <div class="d-flex">
+                                <a href="#" class="reply-link">
+                                    <i class="fas fa-comment"></i> Reply
+                                </a>
                             </div>
+                            <div class="comment-reply">
+                                <!-- Reply form ... -->
+                            </div>*@
+
+    
+                            <div class="nested-comments">
+                                <div class="nested-comment">
+                                    <div class="comment-header">
+                                        Comment by u/commenter2 | 30 points
+                                    </div>
+                                    <div class="comment-content">
+                                        This is a nested comment.
+                                    </div>
+                                    <a href="#" class="reply-link">
+                                        <i class="fas fa-comment"></i> Reply
+                                    </a>
+                                    <div class="comment-reply">
+                                        <!-- Reply form ... -->
+                                    </div>
+                                </div>
+                                <!-- More nested comments ... -->
+                            </div>
+
+
+
                         </div>
                     }
                 }
@@ -123,3 +163,15 @@
         </div>
     </div>
 </div>
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.reply-button').click(function () {
+                $(this).next('.comment-reply').toggleClass('d-none');
+            });
+        });
+    </script>
+}
