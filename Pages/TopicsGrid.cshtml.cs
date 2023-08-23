@@ -74,7 +74,8 @@ namespace Anonymous_Topics.Pages
                      s.Description,
                      s.UserName,
                      s.TopicId,
-                     s.CreatedDate
+                     s.CreatedDate,
+                     s.ParentTopicCommentId
                    ))
                    .ToListAsync();
         }

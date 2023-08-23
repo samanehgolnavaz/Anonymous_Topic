@@ -71,3 +71,23 @@ body, h1, h2, p {
     margin-top: 10px;
     color: #777;
 }
+.comment {
+    margin-bottom: 20px;
+}
+
+/* Style the reply button */
+.reply-button {
+    font-size: 14px;
+    color: #007bff; /* Blue color */
+    text-decoration: none;
+    padding: 0;
+}
+
+    .reply-button:hover {
+        text-decoration: underline;
+    }
+
+/* Style the reply form */
+.reply-form {
+    margin-top: 10px;
+}

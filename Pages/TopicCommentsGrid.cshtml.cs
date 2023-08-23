@@ -29,14 +29,15 @@ namespace Anonymous_Topics.Pages
         [BindProperty]
         public bool IsClosed { get; set; }
         [BindProperty]
-
         public List<GetTopicsViewModel> Topics { get; set; } = new();
         public List<GetTopicCommentsViewModel> TopicComments { get; set; } = new();
         [BindProperty]
         public Guid CommentId { get; set; }
+
         [BindProperty]
         [Required]
         public string  CommentDescription { get; set; }
+
         [BindProperty]
         [Required]
         public string UserName { get; set; }
@@ -58,9 +59,10 @@ namespace Anonymous_Topics.Pages
                 s.Description,
                 s.UserName,
                 s.TopicId,
-                s.CreatedDate
+                s.CreatedDate,
+                s.ParentTopicCommentId
                 )).ToListAsync();
-
+            
             if (topic is null)
             {
                 TempData["Error"] = "User not found";
@@ -73,7 +75,6 @@ namespace Anonymous_Topics.Pages
             Image = topic.Image;
             IsClosed= topic.IsClosed;
             return Page();
-
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -89,14 +90,11 @@ namespace Anonymous_Topics.Pages
             _context.TopicComments.Add(topicComment);
             await _context.SaveChangesAsync();
             return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
-
         }
 
         public async Task<IActionResult> OnPostCloseCommentAsync()
         {
             //var guidValue = Request.Query["id"].ToString();
-            //string stringValue = ViewData["Id"] as string;
-            //if (!string.IsNullOrEmpty(stringValue))
             if (Id==TopicId)
             {
                 var topic = await _context.Topics.FindAsync(Id);
@@ -104,7 +102,6 @@ namespace Anonymous_Topics.Pages
                 {
                     topic.IsClosed=true;
                     await _context.SaveChangesAsync();
-
                 }
             }
             else
@@ -112,6 +109,22 @@ namespace Anonymous_Topics.Pages
                 TempData["Error"] = "You are not Allowed to Close the Topic";
 
             }
+            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
+        }
+        public async  Task<IActionResult> OnPostAddNestedCommentAsync()
+        {
+            //var topicId = new Guid(Request.Query["id"].ToString());
+            var topicId =Guid.Parse("3D4EDD6B-E77D-4BCF-A37E-96138D1D11E9");
+            var topicComment = new TopicComment()
+            {
+                Description = CommentDescription,
+                UserName = UserName,
+                TopicId = topicId,
+                ParentTopicCommentId = CommentId
+
+            };
+            _context.TopicComments.Add(topicComment);
+            await _context.SaveChangesAsync();
             return RedirectToPage("/TopicCommentsGrid", new { id = Id });
 
         }

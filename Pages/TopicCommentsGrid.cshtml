@@ -24,11 +24,10 @@
     </div>
 }
 @section Styles
-{
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    {
     <style>
-        .nested-comment {
+        .nested-comment
+        {
             margin-left: 20px; /* Adjust the indent size as needed */
         }
     </style>
@@ -45,9 +44,6 @@
         <div class="col-md-12">
             <div class="post">
                 <h2 class="post-title">@Model.Title</h2>
-            @*    <div class="post-info">
-                    Posted by u/example_user | 1200 points
-                </div>*@
                 <div class="post-content">
                     <img src="~/images/@Model.Image" class="img-fluid" alt="@Model.Title">
                     <br />
@@ -89,8 +85,8 @@
                 {
                     @foreach (var item in Model.TopicComments.OrderByDescending(c => c.CreatedDate))
                     {
-                      <input value="@item.CommentId" asp-for="@Model.CommentId" type="text" hidden />
-                      <div class="comment">
+                        <input value="@item.CommentId" asp-for="@Model.CommentId" type="text" hidden />
+                        <div class="comment">
                             <div class="comment-info">
                                 Comment by
                                 <span style="font-weight:bold"> @item.UserName</span>
@@ -102,37 +98,38 @@
                             </div>
                             <div class="comment-content" style="color:gray">
                                 <p>@item.Description</p>
-                            </div>              
-                      @*      <div class="d-flex">
-                                <a href="#" class="reply-link">
-                                    <i class="fas fa-comment"></i> Reply
-                                </a>
                             </div>
-                            <div class="comment-reply">
-                                <!-- Reply form ... -->
-                            </div>*@
-
-    
                             <div class="nested-comments">
                                 <div class="nested-comment">
                                     <div class="comment-header">
-                                        Comment by u/commenter2 | 30 points
+                                        Comment by
+                                        <span style="font-weight:bold"> @item.UserName</span>
+                                        /commenter2 
                                     </div>
                                     <div class="comment-content">
-                                        This is a nested comment.
+                                        <span style="font-weight:bold">
+                                            @item.CreatedDate
+                                        </span>
                                     </div>
-                                    <a href="#" class="reply-link">
-                                        <i class="fas fa-comment"></i> Reply
-                                    </a>
-                                    <div class="comment-reply">
-                                        <!-- Reply form ... -->
+                                    <button type="button" class="btn btn-link btn-sm reply-button">Reply</button>
+                                    <div class="reply-form" style="display: none;">
+                                        <form method="post">
+                                            <input value="@item.CommentId" asp-for="@Model.CommentId" name="CommentId" type="text" hidden />
+                                            <div class="form-group">
+                                                <label for="@Model.UserName" class="form-label">Your Username</label>
+                                                <input type="text" class="form-control" asp-for="@Model.UserName" placeholder="Enter your username">
+                                                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="@Model.CommentDescription" class="form-label">Your Comment</label>
+                                                <textarea class="form-control" rows="3" asp-for="@Model.CommentDescription" placeholder="Your reply"></textarea>
+                                                <span asp-validation-for="@Model.CommentDescription" class="text-danger"></span>
+                                            </div>                                  
+                                            <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="AddNestedComment" class="btn btn-primary">Submit</button>
+                                        </form>
                                     </div>
                                 </div>
-                                <!-- More nested comments ... -->
                             </div>
-
-
-
                         </div>
                     }
                 }
@@ -155,7 +152,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="CloseComment"   class="btn btn-primary" id="saveButton">Save</button>
+                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="CloseComment" class="btn btn-primary" id="saveButton">Save</button>
                     </div>
                 </div>
 
@@ -164,14 +161,14 @@
     </div>
 </div>
 @section Scripts
-{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {
     <script>
         $(document).ready(function () {
-            $('.reply-button').click(function () {
-                $(this).next('.comment-reply').toggleClass('d-none');
+            debugger;
+            $(".reply-button").click(function () {
+                $(this).siblings(".reply-form").toggle();
+                debugger;
             });
         });
     </script>
-}
+    }
