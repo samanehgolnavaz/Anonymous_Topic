@@ -113,24 +113,18 @@ namespace Anonymous_Topics.Pages
         }
         public async  Task<IActionResult> OnPostAddNestedCommentAsync()
         {
-            var topicId = new Guid(Request.Query["id"].ToString());
-            //var topicId = Guid.Parse("464BBB59-ECBE-4626-A14F-2D382F61AFB4");
-            if (Guid.TryParse(Request.Query["id"], out Guid id))
-            {
-                Guid guidFromQueryString = id;
-
-            }
+       
             var topicComment = new TopicComment()
             {
                 Description = CommentDescription,
                 UserName = UserName,
-                TopicId =topicId,
+                TopicId = (Guid)Id,
                 ParentTopicCommentId = CommentId
 
             };
             _context.TopicComments.Add(topicComment);
             await _context.SaveChangesAsync();
-            return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
+            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
 
         }
     }

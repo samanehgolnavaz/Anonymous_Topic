@@ -70,80 +70,84 @@
                 </form>
             </div>
             <div class="comments mt-4">
-                <h3>Comments</h3>
-                @if (Model.TopicComments.Count == 0)
-                {
-                    <div class="comment">
-                        <div class="comment-info">
-                            There Is No Comment For This Topic
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    @foreach (var item in Model.TopicComments.OrderByDescending(c => c.CreatedDate))
+                <form method="post">
+                    <input value="@Model.Id" hidden type="text" asp-for="@Model.Id" />
+                    <h3>Comments</h3>
+                    @if (Model.TopicComments.Count == 0)
                     {
-                        <input value="@item.CommentId" asp-for="@Model.CommentId" type="text" hidden />
-                        <input value="@item.ParentTopicCommentId" asp-for="@item.ParentTopicCommentId" type="text" hidden />
-
                         <div class="comment">
                             <div class="comment-info">
-                                @if (Model.TopicComments.Any(c => c.ParentTopicCommentId is null))
-                                {                                 
-                                    <div>
-                                        Comment by
-                                        <span style="font-weight:bold"> @item.UserName</span>
-                                        /commenter1
-                                        |Created at
-                                        <span style="font-weight:bold">
-                                            @item.CreatedDate
-                                        </span>
-                                        <div class="comment-content" style="color:gray">
-                                            <p>@item.Description</p>
-                                        </div>
-                                    </div>
-                                }
+                                There Is No Comment For This Topic
                             </div>
-                            <button type="button" class="btn btn-link btn-sm reply-button">Reply</button>
-                            <div class="reply-form" style="display: none;">
-                                <form method="post">
-                                    <input value="@item.CommentId" asp-for="@Model.CommentId" name="CommentId" type="text" hidden />
-                                    <div class="form-group">
-                                        <label for="@Model.UserName" class="form-label">Your Username</label>
-                                        <input type="text" class="form-control" asp-for="@Model.UserName" placeholder="Enter your username">
-                                        <span asp-validation-for="@Model.UserName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="@Model.CommentDescription" class="form-label">Your Comment</label>
-                                        <textarea class="form-control" rows="3" asp-for="@Model.CommentDescription" placeholder="Your reply"></textarea>
-                                        <span asp-validation-for="@Model.CommentDescription" class="text-danger"></span>
-                                    </div>
-                                    <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="AddNestedComment" class="btn btn-primary">Submit</button>
-                                </form>
-                            </div>
-                            <div class="nested-comments">
-                                @if (Model.TopicComments.Any(c => c.ParentTopicCommentId != null && c.ParentTopicCommentId == c.CommentId))
-                                {
-                                    <div class="nested-comment">
-                                        <div class="comment-header">
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.TopicComments.OrderByDescending(c => c.CreatedDate))
+                        {
+                            <input value="@item.CommentId" asp-for="@Model.CommentId" type="text" hidden />
+                            <input value="@item.ParentTopicCommentId" asp-for="@item.ParentTopicCommentId" type="text" hidden />
+
+                            <div class="comment">
+                                <div class="comment-info">
+                                    @if (Model.TopicComments.Any(c => c.ParentTopicCommentId is null))
+                                    {
+                                        <div>
                                             Comment by
                                             <span style="font-weight:bold"> @item.UserName</span>
-                                            /commenter2
+                                            /commenter1
                                             |Created at
                                             <span style="font-weight:bold">
                                                 @item.CreatedDate
                                             </span>
+                                            <div class="comment-content" style="color:gray">
+                                                <p>@item.Description</p>
+                                            </div>
                                         </div>
-                                        <div class="comment-content">
-                                            <p>@item.Description</p>
+                                    }
+                                </div>
+                                <button type="button" class="btn btn-link btn-sm reply-button">Reply</button>
+                                <div class="reply-form" style="display: none;">
+                                    <form method="post">
+                                        <input value="@item.CommentId" asp-for="@Model.CommentId" name="CommentId" type="text" hidden />
+                                        <div class="form-group">
+                                            <label for="@Model.UserName" class="form-label">Your Username</label>
+                                            <input type="text" class="form-control" asp-for="@Model.UserName" placeholder="Enter your username">
+                                            <span asp-validation-for="@Model.UserName" class="text-danger"></span>
                                         </div>
-                                    </div>
-                                }
+                                        <div class="form-group">
+                                            <label for="@Model.CommentDescription" class="form-label">Your Comment</label>
+                                            <textarea class="form-control" rows="3" asp-for="@Model.CommentDescription" placeholder="Your reply"></textarea>
+                                            <span asp-validation-for="@Model.CommentDescription" class="text-danger"></span>
+                                        </div>
+                                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="AddNestedComment" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                                <div class="nested-comments">
+                                    @if (Model.TopicComments.Any(c => c.ParentTopicCommentId != null && c.ParentTopicCommentId == c.CommentId))
+                                    {
+                                        <div class="nested-comment">
+                                            <div class="comment-header">
+                                                Comment by
+                                                <span style="font-weight:bold"> @item.UserName</span>
+                                                /commenter2
+                                                |Created at
+                                                <span style="font-weight:bold">
+                                                    @item.CreatedDate
+                                                </span>
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>@item.Description</p>
+                                            </div>
+                                        </div>
+                                    }
 
+                                </div>
                             </div>
-                        </div>
+                        }
                     }
-                }
+                </form>
+           
             </div>
         </div>
     </div>
