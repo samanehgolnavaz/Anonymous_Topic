@@ -48,7 +48,7 @@ namespace Anonymous_Topics.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("Anonymous_Topics.Database.Model.TopicCategory", b =>
@@ -62,7 +62,7 @@ namespace Anonymous_Topics.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TopicCategories");
+                    b.ToTable("TopicCategories", (string)null);
                 });
 
             modelBuilder.Entity("Anonymous_Topics.Database.Model.TopicComment", b =>
@@ -91,7 +91,7 @@ namespace Anonymous_Topics.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("TopicComments");
+                    b.ToTable("TopicComments", (string)null);
                 });
 
             modelBuilder.Entity("Anonymous_Topics.Database.Model.TopicComment", b =>

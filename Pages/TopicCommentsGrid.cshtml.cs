@@ -19,7 +19,7 @@ namespace Anonymous_Topics.Pages
             _context = context;
         }
         [BindProperty]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         [BindProperty]
         public string Title { get; set; }
         [BindProperty]
@@ -113,19 +113,24 @@ namespace Anonymous_Topics.Pages
         }
         public async  Task<IActionResult> OnPostAddNestedCommentAsync()
         {
-            //var topicId = new Guid(Request.Query["id"].ToString());
-            var topicId =Guid.Parse("3D4EDD6B-E77D-4BCF-A37E-96138D1D11E9");
+            var topicId = new Guid(Request.Query["id"].ToString());
+            //var topicId = Guid.Parse("464BBB59-ECBE-4626-A14F-2D382F61AFB4");
+            if (Guid.TryParse(Request.Query["id"], out Guid id))
+            {
+                Guid guidFromQueryString = id;
+
+            }
             var topicComment = new TopicComment()
             {
                 Description = CommentDescription,
                 UserName = UserName,
-                TopicId = topicId,
+                TopicId =topicId,
                 ParentTopicCommentId = CommentId
 
             };
             _context.TopicComments.Add(topicComment);
             await _context.SaveChangesAsync();
-            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
+            return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
 
         }
     }
