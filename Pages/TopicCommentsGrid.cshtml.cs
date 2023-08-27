@@ -1,31 +1,40 @@
 using Anonymous_Topics.Database;
 using Anonymous_Topics.Database.Model;
 using Anonymous_Topics.Models.Api;
+using DNTCaptcha.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Anonymous_Topics.Pages
 {
+    [AutoValidateAntiforgeryToken]
+
     public class TopicCommentsGridModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IDNTCaptchaValidatorService _validatorService;
+        private readonly DNTCaptchaOptions _captchaOptions;
 
-        public TopicCommentsGridModel(ApplicationDbContext context)
+
+        public TopicCommentsGridModel(ApplicationDbContext context, IDNTCaptchaValidatorService validatorService, IOptions<DNTCaptchaOptions> options)
         {
             _context = context;
+            _validatorService = validatorService;
+            _captchaOptions = options == null ? throw new ArgumentNullException(nameof(options)) : options.Value;
         }
         [BindProperty]
         public Guid? Id { get; set; }
         [BindProperty]
-        public string Title { get; set; }
+        public string? Title { get; set; }
         [BindProperty]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         [BindProperty]
-        public string Image { get; set; }
+        public string? Image { get; set; }
         [BindProperty]
         public bool IsClosed { get; set; }
         [BindProperty]
@@ -43,7 +52,9 @@ namespace Anonymous_Topics.Pages
         public string UserName { get; set; }
 
         [BindProperty]
-        public Guid TopicId { get; set; }
+        public Guid SecurityKey { get; set; }
+        [BindProperty]
+        public string DNTCaptchaInputText { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
@@ -74,58 +85,80 @@ namespace Anonymous_Topics.Pages
             Description = topic.Description;
             Image = topic.Image;
             IsClosed= topic.IsClosed;
+            SecurityKey= topic.SecurityKey;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var topicId = new Guid(Request.Query["id"].ToString());
-            var topicComment = new TopicComment()
+            var topicId = new Guid(Request.Query["id"].ToString());           
+            if (!_validatorService.HasRequestValidCaptchaEntry())
             {
-                Description= CommentDescription,
-                UserName = UserName,
-                TopicId = topicId
-
-            };
-            _context.TopicComments.Add(topicComment);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
+                this.ModelState.AddModelError(_captchaOptions.CaptchaComponent.CaptchaInputName,
+                    "Please enter the security code as a number.");
+                return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
+            }
+            else
+            {
+                var topicComment = new TopicComment()
+                {
+                    Description = CommentDescription,
+                    UserName = UserName,
+                    TopicId = topicId
+                };
+                _context.TopicComments.Add(topicComment);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("/TopicCommentsGrid", new { id = topicId });
+            }
         }
 
         public async Task<IActionResult> OnPostCloseCommentAsync()
         {
-            //var guidValue = Request.Query["id"].ToString();
-            if (Id==TopicId)
+            var topic = await _context.Topics.FindAsync(Id);
+            //var guidValue = Request.Query["id"].ToString();           
+            if (topic != null)
             {
-                var topic = await _context.Topics.FindAsync(Id);
-                if (topic != null)
+                    var securityKey = await _context.Topics
+                    .Where(s => s.Id == Id)
+                    .Select(s => s.SecurityKey)
+                    .FirstOrDefaultAsync();
+                if (securityKey==SecurityKey && securityKey!=Guid.Empty)
                 {
-                    topic.IsClosed=true;
+                    topic.IsClosed = true;
                     await _context.SaveChangesAsync();
                 }
+                else
+                {
+                    TempData["Error"] = "You are not Allowed to Close the Topic";
+
+                }
+
+            }
+
+            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
+        }
+    
+        public async  Task<IActionResult> OnPostAddNestedCommentAsync()
+        {
+            if (!_validatorService.HasRequestValidCaptchaEntry())
+            {
+                this.ModelState.AddModelError(_captchaOptions.CaptchaComponent.CaptchaInputName,
+                    "Please enter the security code as a number.");
+                return RedirectToPage("/TopicCommentsGrid", new { id = Id });
             }
             else
             {
-                TempData["Error"] = "You are not Allowed to Close the Topic";
-
+                var topicComment = new TopicComment()
+                {
+                    Description = CommentDescription,
+                    UserName = UserName,
+                    TopicId = (Guid)Id,
+                    ParentTopicCommentId = CommentId
+                };
+                _context.TopicComments.Add(topicComment);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("/TopicCommentsGrid", new { id = Id });
             }
-            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
-        }
-        public async  Task<IActionResult> OnPostAddNestedCommentAsync()
-        {
-       
-            var topicComment = new TopicComment()
-            {
-                Description = CommentDescription,
-                UserName = UserName,
-                TopicId = (Guid)Id,
-                ParentTopicCommentId = CommentId
-
-            };
-            _context.TopicComments.Add(topicComment);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("/TopicCommentsGrid", new { id = Id });
-
         }
     }
 }

@@ -9,6 +9,8 @@ using System;
 
 namespace Anonymous_Topics.Pages
 {
+    [AutoValidateAntiforgeryToken]
+
     public class AddCategoryModel : PageModel
     {
 

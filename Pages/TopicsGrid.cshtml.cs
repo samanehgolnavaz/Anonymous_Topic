@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace Anonymous_Topics.Pages
 {
+    [AutoValidateAntiforgeryToken] 
     public class TopicsGridModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -34,10 +35,14 @@ namespace Anonymous_Topics.Pages
                       , c.Title
                       , c.Description
                       , c.TopicCatergoryId
+                      , c.TopicCategory.Name
                       , c.Image
                       , c.IsClosed
                       , c.CreatedDate
-                     ))
+                      , c.SecurityKey
+                      
+                    ))
+                      
                  .ToListAsync();
             }
             else
@@ -50,9 +55,11 @@ namespace Anonymous_Topics.Pages
                        , c.Title
                        , c.Description
                        , c.TopicCatergoryId
+                       , c.TopicCategory.Name
                        , c.Image
                        , c.IsClosed
                        , c.CreatedDate
+                       , c.SecurityKey
                      ))
                    .ToListAsync();
             }

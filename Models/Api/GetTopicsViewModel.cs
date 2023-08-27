@@ -2,6 +2,6 @@
 
 namespace Anonymous_Topics.Models.Api
 {
-    public record GetTopicsViewModel(Guid Id,string Title ,string Description,Guid TopicCategoryId,string Image,bool IsClosed,DateTime CreatedDate);
+    public record GetTopicsViewModel(Guid Id,string Title ,string Description,Guid TopicCategoryId, string TopicCategory, string Image,bool IsClosed,DateTime CreatedDate,Guid SecurityKeys);
  
 }

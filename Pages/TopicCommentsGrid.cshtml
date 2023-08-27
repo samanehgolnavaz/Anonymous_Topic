@@ -66,6 +66,26 @@
                         <textarea class="form-control" asp-for="@Model.CommentDescription" placeholder="Enter your comment"></textarea>
                         <span asp-validation-for="@Model.CommentDescription" class="text-danger"></span>
                     </div>
+                    <div>
+                        <dnt-captcha asp-captcha-generator-max="30"
+                                     asp-captcha-generator-min="1"
+                                     asp-captcha-generator-language="English"
+                                     asp-captcha-generator-display-mode="NumberToWord"
+                                     asp-use-relative-urls="true"
+                                     asp-placeholder="Security code as a number"
+                                     asp-validation-error-message="Please enter the security code as a number."
+                                     asp-too-many-requests-error-message="Too many requests! Please wait a minute!"
+                                     asp-font-name="Tahoma"
+                                     asp-font-size="20"
+                                     asp-fore-color="#333333"
+                                     asp-back-color="#FCF6F5FF"
+                                     asp-text-box-class="form-control"
+                                     asp-text-box-template="<div class='input-group'><span class='input-group-text'><span class='bi-lock'></span></span>{0}</div>"
+                                     asp-validation-message-class="text-danger"
+                                     asp-refresh-button-class="bi-arrow-counterclockwise btn-lg"
+                                     asp-show-refresh-button="true"
+                                     asp-dir="ltr" />
+                    </div>
                     <button type="submit" class="btn btn-primary">Add Comment</button>
                 </form>
             </div>
@@ -120,6 +140,26 @@
                                             <textarea class="form-control" rows="3" asp-for="@Model.CommentDescription" placeholder="Your reply"></textarea>
                                             <span asp-validation-for="@Model.CommentDescription" class="text-danger"></span>
                                         </div>
+                                                <div>
+            <dnt-captcha asp-captcha-generator-max="30"
+                         asp-captcha-generator-min="1"
+                         asp-captcha-generator-language="English"
+                         asp-captcha-generator-display-mode="NumberToWord"
+                         asp-use-relative-urls="true"
+                         asp-placeholder="Security code as a number"
+                         asp-validation-error-message="Please enter the security code as a number."
+                         asp-too-many-requests-error-message="Too many requests! Please wait a minute!"
+                         asp-font-name="Tahoma"
+                         asp-font-size="20"
+                         asp-fore-color="#333333"
+                         asp-back-color="#FCF6F5FF"
+                         asp-text-box-class="form-control"
+                         asp-text-box-template="<div class='input-group'><span class='input-group-text'><span class='bi-lock'></span></span>{0}</div>"
+                         asp-validation-message-class="text-danger"
+                         asp-refresh-button-class="bi-arrow-counterclockwise btn-lg"
+                         asp-show-refresh-button="true"
+                         asp-dir="ltr" />
+        </div>
                                         <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="AddNestedComment" class="btn btn-primary">Submit</button>
                                     </form>
                                 </div>
@@ -155,21 +195,20 @@
         <div class="modal-dialog">
             <form method="post">
                 <input value="@Model.Id" hidden type="text" asp-for="@Model.Id" />
-                <p hidden>@ViewData["Id"]</p>
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="closeCommentModal">Please Enter Your TopicId</h5>
+                        <h5 class="modal-title" id="closeCommentModal">Please Enter Your SecurityKey</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <label for="@Model.TopicId" class="form-label">TopicId:</label>
-                        <input type="text" class="form-control" id="topicIdField" asp-for="@Model.TopicId" placeholder="Enter Your Key">
-                        <span asp-validation-for="@Model.TopicId" class="text-danger"></span>
+                        <label for="@Model.SecurityKey" class="form-label">SecurityKey:</label>
+                        <input type="text" class="form-control" id="SecurityKey" asp-for="@Model.SecurityKey" placeholder="Enter Your Key">
+                        <span asp-validation-for="@Model.SecurityKey" class="text-danger"></span>
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="CloseComment" class="btn btn-primary" id="saveButton">Save</button>
+                        <button type="submit" asp-page="TopicCommentsGrid" asp-page-handler="CloseComment"  class="btn btn-primary" id="saveButton">Save</button>
                     </div>
                 </div>
 
